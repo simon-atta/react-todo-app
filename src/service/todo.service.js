@@ -6,15 +6,19 @@ class TodoDataService {
   }
 
   get(id) {
-    return http.get(`/todo/${id}`);
+    return http.get(`/todo/${id}/id`);
+  }
+
+  findByName(title) {
+    return http.get(`/todo/name?name=${title}`);
   }
 
   create(data) {
     return http.post("/todo", data);
   }
 
-  update(id, data) {
-    return http.put(`/todo/${id}`, data);
+  update(data) {
+    return http.put(`/todo`, data);
   }
 
   delete(id) {
@@ -24,6 +28,8 @@ class TodoDataService {
   deleteAll() {
     return http.delete(`/todo`);
   }
+
+
 
 
 }

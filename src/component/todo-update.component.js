@@ -4,21 +4,18 @@ import TodoDataService from "../service/todo.service";
 export default class UpdateTodo extends Component {
   constructor(props) {
     super(props);
-    this.onChangeTitle = this.onChangeTitle.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeStatus = this.onChangeStatus.bind(this);
     this.getTodo = this.getTodo.bind(this);
-    this.updatePublished = this.updatePublished.bind(this);
     this.updateTodo = this.updateTodo.bind(this);
     this.deleteTodo = this.deleteTodo.bind(this);
 
     this.state = {
-      currentTutorial: {
+      currentTodo: {
         id: null,
-        title: "",
-        description: "",
-        published: false
-      },
-      message: ""
+        name: "",
+        status: ""
+      }
     };
   }
 
@@ -26,59 +23,36 @@ export default class UpdateTodo extends Component {
     this.getTodo(this.props.match.params.id);
   }
 
-  onChangeTitle(e) {
-    const title = e.target.value;
+  onChangeName(e) {
+    const name = e.target.value;
 
     this.setState(function(prevState) {
       return {
-        currentTutorial: {
-          ...prevState.currentTutorial,
-          title: title
+        currentTodo: {
+          ...prevState.currentTodo,
+          name: name
         }
       };
     });
   }
 
-  onChangeDescription(e) {
-    const description = e.target.value;
-    
+  onChangeStatus(e) {
+    const status = e.target.value;
+
     this.setState(prevState => ({
-      currentTutorial: {
-        ...prevState.currentTutorial,
-        description: description
+      currentTodo: {
+        ...prevState.currentTodo,
+        status: status
       }
     }));
   }
 
   getTodo(id) {
-    TutorialDataService.get(id)
+    TodoDataService.get(id)
       .then(response => {
         this.setState({
-          currentTutorial: response.data
+          currentTodo: response.data.pop(0)
         });
-        console.log(response.data);
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  }
-
-  updatePublished(status) {
-    var data = {
-      id: this.state.currentTutorial.id,
-      title: this.state.currentTutorial.title,
-      description: this.state.currentTutorial.description,
-      published: status
-    };
-
-    TutorialDataService.update(this.state.currentTutorial.id, data)
-      .then(response => {
-        this.setState(prevState => ({
-          currentTutorial: {
-            ...prevState.currentTutorial,
-            published: status
-          }
-        }));
         console.log(response.data);
       })
       .catch(e => {
@@ -88,14 +62,11 @@ export default class UpdateTodo extends Component {
 
   updateTodo() {
     TodoDataService.update(
-      this.state.currentTutorial.id,
-      this.state.currentTutorial
+      this.state.currentTodo
     )
       .then(response => {
         console.log(response.data);
-        this.setState({
-          message: "The tutorial was updated successfully!"
-        });
+        this.props.history.push("/todo");
       })
       .catch(e => {
         console.log(e);
@@ -103,10 +74,10 @@ export default class UpdateTodo extends Component {
   }
 
   deleteTodo() {
-    TodoDataService.delete(this.state.currentTutorial.id)
+    TodoDataService.delete(this.state.currentTodo.id)
       .then(response => {
         console.log(response.data);
-        this.props.history.push('/tutorials')
+        this.props.history.push("/todo");
       })
       .catch(e => {
         console.log(e);
@@ -114,58 +85,35 @@ export default class UpdateTodo extends Component {
   }
 
   render() {
-    const { currentTutorial } = this.state;
+    const { currentTodo } = this.state;
 
     return (
       <div>
-        {currentTutorial ? (
+        {currentTodo ? (
           <div className="edit-form">
-            <h4>Tutorial</h4>
+            <h4>TODO Details</h4>
             <form>
               <div className="form-group">
-                <label htmlFor="title">Title</label>
+                <label htmlFor="name">Name</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="title"
-                  value={currentTutorial.title}
-                  onChange={this.onChangeTitle}
+                  id="name"
+                  value={this.state.currentTodo.name}
+                  onChange={this.onChangeName}
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="Status">Status</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="description"
-                  value={currentTutorial.description}
-                  onChange={this.onChangeDescription}
+                  id="status"
+                  value={currentTodo.status}
+                  onChange={this.onChangeStatus}
                 />
-              </div>
-
-              <div className="form-group">
-                <label>
-                  <strong>Status:</strong>
-                </label>
-                {currentTutorial.published ? "Published" : "Pending"}
               </div>
             </form>
-
-            {currentTutorial.published ? (
-              <button
-                className="badge badge-primary mr-2"
-                onClick={() => this.updatePublished(false)}
-              >
-                UnPublish
-              </button>
-            ) : (
-              <button
-                className="badge badge-primary mr-2"
-                onClick={() => this.updatePublished(true)}
-              >
-                Publish
-              </button>
-            )}
 
             <button
               className="badge badge-danger mr-2"
@@ -181,7 +129,7 @@ export default class UpdateTodo extends Component {
             >
               Update
             </button>
-            <p>{this.state.message}</p>
+
           </div>
         ) : (
           <div>

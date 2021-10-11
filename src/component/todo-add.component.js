@@ -29,8 +29,6 @@ export default class AddTodo extends Component {
   }
 
   saveTodo() {
-    console.log(this.state.name)
-    console.log(this.state.status)
     let data = {
       name: this.state.name,
       status: this.state.status
@@ -43,7 +41,7 @@ export default class AddTodo extends Component {
           name: response.data.name,
           status: response.data.status
         });
-        console.log(response.data);
+        this.props.history.push("/todo");
       })
       .catch(e => {
         console.log(e);
