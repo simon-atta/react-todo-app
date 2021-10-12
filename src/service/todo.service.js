@@ -1,16 +1,16 @@
 import http from "../http-common";
 
 class TodoDataService {
-  getAll() {
+  findAll() {
     return http.get("/todo");
   }
 
-  get(id) {
+  findById(id) {
     return http.get(`/todo/${id}/id`);
   }
 
-  findByName(title) {
-    return http.get(`/todo/name?name=${title}`);
+  findByName(name) {
+    return http.get(`/todo/name?name=${name}`);
   }
 
   create(data) {
@@ -28,9 +28,6 @@ class TodoDataService {
   deleteAll() {
     return http.delete(`/todo`);
   }
-
-
-
 
 }
 

@@ -48,7 +48,7 @@ export default class UpdateTodo extends Component {
   }
 
   getTodo(id) {
-    TodoDataService.get(id)
+    TodoDataService.findById(id)
       .then(response => {
         this.setState({
           currentTodo: response.data.pop(0)

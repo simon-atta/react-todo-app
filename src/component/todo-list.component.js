@@ -34,7 +34,7 @@ export default class TodoList extends Component {
   }
 
   retrieveTodos() {
-    TodoDataService.getAll()
+    TodoDataService.findAll()
       .then(response => {
         this.setState({
           todos: response.data
